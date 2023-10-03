@@ -1,0 +1,49 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{equationd}
+\author{miguel.garcia.duch }
+\date{May 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\(X_{it} = x_{io} \cdot \left(\frac{P_{it}}{E_t \cdot P_{fit}}\right)^{\gamma_{i1}} \cdot Z_{it}^{\phi_i}\)
+
+\(M_{it} = m_{io} \cdot \left(\frac{E_t \cdot P_{fit}}{P_{it}}\right)^{\gamma_{i2}} \cdot Y_{it}^{\theta_i}\)
+
+\(P_t \cdot X_t = P_{ft} \cdot E_t \cdot M_t\)
+
+\(M_t = \sum_{i=1}^{n} \left(\frac{P_{ft}}{P_{fit}} M_{it}\right) = \sum_{i=1}^{n} M_{it}\)
+
+\(P_{ft} = \sum_{t}^{n} (1=l+RW)\)
+
+\(P_t \cdot X_t = \sum_{i=1}^{n} P_{it} \cdot X_{it}\)
+
+\(X_t = \sum_{i=1}^{n} \left(\frac{P_t}{P_{it}} X_{it}\right) = \sum_{i=1}^{n} X_{it}\)
+
+\(m_i = \gamma_{i2} \cdot (p_i - e^{-p_{fi}}) + \bar{\theta} y_i\)
+
+\(x_i = \gamma_{i1} \cdot (p_{fi} + e^{-p_i}) + \bar{\phi} z_i\)
+
+\(p+x=m+p_f+e\)
+
+\(y_{BPC} = \theta \cdot (\gamma_1 + \gamma_2 - 1) \cdot (p_f + e^{-p}) + \bar{\phi} z\)
+
+\(y_{TL} = \bar{\theta} z\)
+
+\(y_{WTL} = \bar{\theta} x\)
+
+\(x = \bar{z} \sum_{i=1}^{n} (\mu_i \cdot \phi_i)\)
+
+\(m = \bar{y} \sum_{i=1}^{n} (\lambda_i \cdot \psi_i)\)
+
+\(\sum_{i=1}^{n} \mu_i = 1 \quad \forall \mu_i = \frac{X_t}{X_{it}}\)
+
+\(\sum_{i=1}^{n} \lambda_i = 1 \quad \forall \lambda_i = \frac{M_t}{M_{it}}\)
+
+
+\end{document}

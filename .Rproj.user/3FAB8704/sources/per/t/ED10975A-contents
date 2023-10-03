@@ -1,0 +1,74 @@
+############################## NEEDED PACKAGES, DATA AND INITIAL PARAMENTERS ##########################################################
+robust <- F
+library("magrittr")
+library("data.table")
+library("gridExtra")
+library("ggplot2")
+library("ggpmisc")
+countries <- c("Austria", "Finland", "France", "Germany", "Greece", "Italy", "Netherlands", "Portugal", "Spain")
+north <- c("Austria", "Finland", "Germany", "Netherlands")
+south <- c("Greece", "Italy", "Portugal", "Spain")
+
+tech <- c("PRIM", "RES", "LOW", "MED", "HIGH")
+
+############# GET DATA TO CALCULATE MEAN GROWTH RATES ##############################################
+eu_data <- fread("Data/CSV/COMTRADE/eudata_final_nom.csv")
+## forecasts of TL
+total_F <- fread("Output/CSV/TL_total.csv")
+eu_data[, tech_imports := log(msum) - mprices / 100 - log(xrate)]
+eu_data[, tech_exports := log(xsum) - xprices / 100 - log(xrate)]
+eu_data <- eu_data[reporter %in% countries]
+eu_data[reporter %in% north, club := "north"][reporter %in% south, club := "south"]
+
+## sector shares table
+eu_shares <- eu_data[year %in% c(1992, 2019), .(tech, year, reporter, share_tech_exports, share_tech_imports)]
+eu_shares[tech == "HIGH" & year == 1992, .(reporter, share_tech_exports, share_tech_imports)]
+eu_shares[tech == "HIGH" & year == 2019, .(reporter, share_tech_exports, share_tech_imports)]
+
+## current account by group graph
+aa <- eu_data[, foreign_def := (sum(exp(exports)) - sum(exp(imports))) / sum(exp(income)), by = list(year, club)][reporter %in% c("Spain", "Germany") & tech %in% "HIGH"]
+north_cc <- aa[club == "north", foreign_def] %>% as.ts()
+south_cc <- aa[club == "south", foreign_def] %>% as.ts()
+cc_table <- cbind(year = c(1992:2019), north_cc, south_cc, ori_line = rep(0, 28))
+sel <- cc_table[, c("year", "north_cc", "south_cc")] %>% as.data.frame()
+sel_alt <- melt(sel, id = "year")
+colnames(sel_alt) <- c("year", "Groups", "Current_Account")
+
+
+
+eu_one <- eu_data[tech == "HIGH"]
+eu_growth <- eu_one[, .(year, growth = c(NA, diff(income)), fgrowth = c(NA, diff(fincome))), by = reporter][year != 1992]
+tl_coef <- total_F[, .(reporter, tlr = exports_c / imports_c)]
+eu_growth <- merge(eu_growth, tl_coef, index = reporter)
+eu_growth[, forecasts := fgrowth * tlr]
+test_tlA <- lm(growth ~ forecasts, data = eu_growth)
+test_tlAA <- lm(growth ~ -1 + forecasts, data = eu_growth)
+test_tlB <- lm(grate_income ~ predicted_grate, data = total_F)
+test_tlBB <- lm(grate_income ~ -1 + predicted_grate, data = total_F)
+
+
+model <- lm(growth ~ forecasts, data = eu_growth)
+residuals <- model$residuals
+data_scatter <- eu_growth[, .(growth, forecasts)] %>% as.data.frame()
+#######################################################
+eu_growth2 <- eu_growth[reporter != "Greece"]
+model2 <- lm(growth ~ forecasts, data = eu_growth2)
+data_scatter2 <- eu_growth2[, .(growth, forecasts)] %>% as.data.frame()
+
+
+plot3 <- ggplot(data_scatter2, aes(x = forecasts, y = growth)) +
+    geom_point() +
+    stat_poly_line(method = lm, se = FALSE) +
+    # stat_poly_eq() +
+    geom_abline(intercept = 0, slope = 1) +
+    ggtitle("Δy = 0.001 + 1.075TL(-Gr)       R^2: 0.679")
+
+
+plm::purtest(growth ~ 1, data = eu_growth, index = c("reporter", "year")) %>% print()
+tseries::jarque.bera.test(residuals) %>% print()
+car::ncvTest(model) %>% print()
+Metrics::rmse(eu_growth$growth, eu_growth$forecasts) %>% print()
+Metrics::mae(eu_growth$growth, eu_growth$forecasts) %>% print()
+car::linearHypothesis(model, c("(Intercept) = 0", "forecasts=1"), test = "Chisq") %>% print()
+
+rm(list = setdiff(ls(), c("plot3", "plot4")))
