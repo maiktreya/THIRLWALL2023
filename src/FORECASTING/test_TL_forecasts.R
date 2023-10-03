@@ -4,8 +4,8 @@ library("ggplot2")
 library("ggpmisc")
 library("gridExtra")
 
-eu_data <- fread("Data/CSV/COMTRADE/eudata_final_nom.csv")
-total_F <- fread("Output/CSV/TL.csv")
+eu_data <- fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")
+total_F <- fread("Output/.CSV/TL.csv")
 
 countries <- c("Austria", "Finland", "France", "Germany", "Greece", "Italy", "Netherlands", "Portugal", "Spain")
 countries_ng <- c("Austria", "Finland", "France", "Germany", "Italy", "Netherlands", "Portugal", "Spain")
