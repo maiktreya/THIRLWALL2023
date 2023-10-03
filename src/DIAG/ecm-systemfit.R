@@ -10,7 +10,8 @@ add_diff_lag_columns <- function(
     method = "SUR",
     path = "Data/.CSV/COMTRADE/eudata_final_nom.csv") {
     diff_cols <- c()
-    lag_cols <- c()
+    all_lag_cols <- c()
+
     dt <- fread(path)
 
     for (col in col_names) {
@@ -19,24 +20,26 @@ add_diff_lag_columns <- function(
         dt[, (diff_col) := diff(c(NA, get(col)))]
         diff_cols <- c(diff_cols, diff_col)
 
-        # Add lag column
-        lag_col <- paste0(col, "_lag")
-        dt[, (lag_col) := shift(get(col), n = 1, type = "lag")]
-        lag_cols <- c(lag_cols, lag_col)
+        # Add lag columns for each lag value
+        for (lag in 1:nlags) {
+            lag_col <- paste0(col, "_lag", lag)
+            dt[, (lag_col) := shift(get(col), n = lag, type = "lag")]
+            all_lag_cols <- c(all_lag_cols, lag_col)
+        }
     }
 
     # Construct formula string
-    formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], lag_cols), collapse = " + "))
+    formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], all_lag_cols), collapse = " + "))
 
-    # Run linear model
-    lm_result <- systemfit(as.formula(formula_str), data = dt)
+    # Run systemfit model
+    lm_result <- systemfit(as.formula(formula_str), data = dt, method = method)
 
     return(lm_result)
 }
 
 # Example usage:
 # dt <- data.table(a = c(1,2,3,4,5), b = c(5,6,7,8,9))
-# result <- add_diff_lag_columns_and_run_lm(dt, c("a", "b"))
+# result <- add_diff_lag_columns(c("a", "b"), nlags = 2, method = "SUR")
 # summary(result)
 
-add_diff_lag_columns(c("exports", "fincome")) %>% summary()
+add_diff_lag_columns(c("exports", "fincome"), nlags = 2, method = "SUR") %>% summary()
