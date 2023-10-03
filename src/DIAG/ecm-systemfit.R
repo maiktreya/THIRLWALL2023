@@ -1,37 +1,42 @@
-# EcmSystem <- function(
-#     path = "Data/.CSV/COMTRADE/eudata_final_nom.csv",
-#     nlags = 1,
-#     maxiter = 200,
-#     dependant = NA,
-#     regressors = NA,
-#     method = "2SLS" # c("2SLS, SUR; ·SLS)
-#     ) {
-#     data <- data.table::fread(path)
-#
-#     for (i in regressors) {
-#         new_var <- data[, as.character(i)]
-#         # Create lagged column of the regressor
-#         data[, paste0("lag_", i) := new_var]
-#     }
-#
-#     return(data)
-# }
-# aa <- EcmSystem(dependant = "tech_imp", regressors = c("fincome"))
+# Ecm for systemfit
 
-dt <- fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")
-add_diff_lag_columns <- function(dt, col_names) {
+library(magrittr)
+library(data.table)
+library(systemfit)
+
+add_diff_lag_columns <- function(
+    col_names = c(),
+    nlags = 1,
+    method = "SUR",
+    path = "Data/.CSV/COMTRADE/eudata_final_nom.csv") {
+    diff_cols <- c()
+    lag_cols <- c()
+    dt <- fread(path)
+
     for (col in col_names) {
         # Add diff column
-        dt[, paste0(col, "_diff") := diff(c(NA, get(col)))]
+        diff_col <- paste0(col, "_diff")
+        dt[, (diff_col) := diff(c(NA, get(col)))]
+        diff_cols <- c(diff_cols, diff_col)
 
         # Add lag column
-        dt[, paste0(col, "_lag") := shift(get(col), n = 1, type = "lag")]
+        lag_col <- paste0(col, "_lag")
+        dt[, (lag_col) := shift(get(col), n = 1, type = "lag")]
+        lag_cols <- c(lag_cols, lag_col)
     }
-    return(dt)
+
+    # Construct formula string
+    formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], lag_cols), collapse = " + "))
+
+    # Run linear model
+    lm_result <- systemfit(as.formula(formula_str), data = dt)
+
+    return(lm_result)
 }
 
 # Example usage:
 # dt <- data.table(a = c(1,2,3,4,5), b = c(5,6,7,8,9))
-# new_dt <- add_diff_lag_columns(dt, c("a", "b"))
-# print(new_dt)
-add_diff_lag_columns(dt, c("fincome"))
+# result <- add_diff_lag_columns_and_run_lm(dt, c("a", "b"))
+# summary(result)
+
+add_diff_lag_columns(c("exports", "fincome")) %>% summary()
