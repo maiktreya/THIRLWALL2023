@@ -33,7 +33,6 @@ add_diff_lag_columns <- function(
 
     # Run systemfit model
     lm_result <- systemfit(as.formula(formula_str), data = dt, method = method)
-
     return(lm_result)
 }
 
@@ -41,5 +40,7 @@ add_diff_lag_columns <- function(
 # dt <- data.table(a = c(1,2,3,4,5), b = c(5,6,7,8,9))
 # result <- add_diff_lag_columns(c("a", "b"), nlags = 2, method = "SUR")
 # summary(result)
-
-add_diff_lag_columns(c("exports", "fincome"), nlags = 2, method = "SUR") %>% summary()
+pre_exp <- add_diff_lag_columns(c("exports", "fincome"), nlags = 2, method = "SUR")
+coef_exp <- pre_exp$coefficients
+pre_exp %>% summary()
+coef_exp %>% print()
