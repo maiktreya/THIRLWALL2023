@@ -9,7 +9,9 @@ uecm_systemfit <- function(
     col_names = c(),
     nlags = 1,
     method = "SUR",
-    table = data.table()) {
+    method_solv = "EViews",
+    iterations = 1,
+    table = data.table::data.table()) {
     diff_cols <- c()
     all_lag_cols <- c()
     dt <- table
@@ -32,46 +34,29 @@ uecm_systemfit <- function(
     formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], all_lag_cols), collapse = " + "))
 
     # Run systemfit model
-    lm_result <- systemfit(as.formula(formula_str), data = dt, method = method)
+    ifelse(method == "3SLS",
+        control_system <- systemfit::systemfit.control(
+            methodResidCov = "noDfCor",
+            residCovWeighted = FALSE,
+            maxiter = iterations,
+            tol = 1e-5,
+            method3sls = "EViews" # GLS(default), IV, GMM, SCHMIDT, EVIEWS
+        ),
+        control_system <- systemfit::systemfit.control(
+            methodResidCov = "noDfCor",
+            residCovWeighted = FALSE,
+            maxiter = iterations,
+            tol = 1e-5,
+        )
+    )
+    lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system)
     return(lm_result)
 }
 
 #################################################
-get_ect_systemfit <- function(systemfit_uecm_coefs) {
-    lags_x <- coef_exp[names(systemfit_uecm_coefs$coefficients) %like% "lag"]
-    fincCx <- table_dt[, get(sel_variables[2])] * lags_x[names(lags_x) %like% sel_variables[2]] / abs(lags_x[names(lags_x) %like% sel_variables[1]])
-    rpriCx <- table_dt[, get(sel_variables[3])] * lags_x[names(lags_x) %like% sel_variables[3]] / abs(lags_x[names(lags_x) %like% sel_variables[1]])
-    ect_x <- table_dt[, get(sel_variables[1])] - rpriCx - fincCx
-    transf <- data.table::data.table(ect_x)
+get_ect_systemfit <- function(systemfit_uecm_coefs, sel_variables) {
+    coef_exp <- systemfit_uecm_coefs$coefficients
 
-    return(transf)
-}
-
-##################################################
-recm_systemfit <- function(
-    col_names = c(),
-    ect,
-    method = "SUR",
-    table = data.table()) {
-    diff_cols <- c()
-    dt <- table
-
-    for (col in col_names) {
-        # Add diff column
-        diff_col <- paste0(col, "_diff")
-        dt[, (diff_col) := diff(c(NA, get(col)))]
-        diff_cols <- c(diff_cols, diff_col)
-    }
-    # Add lag columns for each lag value
-    # Construct formula string
-    formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect), collapse = " + "))
-
-    # Run systemfit model
-    lm_result <- systemfit(as.formula(formula_str), data = dt, method = method)
-    return(lm_result)
-}
-
-get_ect_systemfit2 <- function(systemfit_uecm_coefs, sel_variables) {
     lags_x <- coef_exp[names(systemfit_uecm_coefs$coefficients) %like% "lag"]
 
     # Initialize ect_x with the first term
@@ -89,19 +74,88 @@ get_ect_systemfit2 <- function(systemfit_uecm_coefs, sel_variables) {
 }
 
 ##################################################
+recm_systemfit <- function(
+    col_names = c(),
+    uecm_model,
+    method = "SUR",
+    method_solv = "EViews",
+    iterations = 1,
+    table = data.table::data.table()) {
+    diff_cols <- c()
+    dt <- table
+
+    # get and incorporate ECT from UECM
+    ect_test <- get_ect_systemfit(systemfit_uecm_coefs = uecm_model, sel_variables = col_names)
+    dt <- cbind(dt, ect_test)
+    ect <- dt$ect_test
+
+    for (col in col_names) {
+        # Add diff column
+        diff_col <- paste0(col, "_diff")
+        dt[, (diff_col) := diff(c(NA, get(col)))]
+        diff_cols <- c(diff_cols, diff_col)
+    }
+    # Add lag columns for each lag value
+    # Construct formula string
+    formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect), collapse = " + "))
+    # Run systemfit model
+    ifelse(method == "3SLS",
+        control_system <- systemfit::systemfit.control(
+            methodResidCov = "noDfCor",
+            residCovWeighted = FALSE,
+            maxiter = iterations,
+            tol = 1e-5,
+            method3sls = "EViews" # GLS(default), IV, GMM, SCHMIDT, EVIEWS
+        ),
+        control_system <- systemfit::systemfit.control(
+            methodResidCov = "noDfCor",
+            residCovWeighted = FALSE,
+            maxiter = iterations,
+            tol = 1e-5,
+        )
+    )
+    # Run systemfit model
+    lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system)
+    return(lm_result)
+}
+
+##################################################
 # Example usage:
-transf <- data.table()
+# Define dataset of usage (data.table required) and selected variables for coint. analysis. The dependant var should be listed first.
 table_dt <- fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")[reporter == "Spain" & tech == "HIGH"]
 sel_variables <- c("tech_exports", "fincome", "rprices")
 
-pre_exp <- uecm_systemfit(table = table_dt, col_names = sel_variables, nlags = 2, method = "SUR")
-coef_exp <- pre_exp$coefficients
+# Get an Unrestricted ECM using systemfit methods
+pre_exp <- uecm_systemfit(
+    table = table_dt,
+    col_names = sel_variables,
+    nlags = 2,
+    method = "SUR",
+    iterations = 1
+)
 
-ect_test <- get_ect_systemfit(systemfit_uecm_coefs = pre_exp)
-ect_test2 <- get_ect_systemfit2(systemfit_uecm_coefs = pre_exp, sel_variables = sel_variables)
+# Get a restricted ECM using systemfit methods
+pos_exp <- recm_systemfit(
+    table = table_dt,
+    uecm_model = pre_exp,
+    col_names = sel_variables,
+    method = "SUR",
+    iterations = 1
+) %>%
+    summary() %>%
+    print()
 
-table_dt <- cbind(table_dt, ect_test)
 
-pos_exp <- recm_systemfit(table = table_dt, col_names = sel_variables, ect = table_dt$ect_test, method = "SUR")
 
-print(all.equal(ect_test, ect_test2))
+bound_test_x <- data.table()
+bound_interx <- c()
+countries <- c("Spain")
+for (m in tech) {
+    for (n in seq_along(countries)) {
+        ##### BOUND TEST ESTIMATION
+        bound_interx[n] <- aod::wald.test(b = coef(pre_exp$eq[[n]]), Sigma = vcov(pre_exp$eq[[n]]), Terms = 2:4)$result$chi2[1] / 3
+    }
+    bound_test_x <- cbind(bound_test_x, bound_interx)
+    colnames(bound_test_x)[ncol(bound_test_x)] <- paste0(m, "_x")
+}
+bound_test_x <- cbind(countries, bound_test_x)

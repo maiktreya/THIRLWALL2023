@@ -55,6 +55,8 @@ uecm_systemfit <- function(
 
 #################################################
 get_ect_systemfit <- function(systemfit_uecm_coefs, sel_variables) {
+    coef_exp <- systemfit_uecm_coefs$coefficients
+
     lags_x <- coef_exp[names(systemfit_uecm_coefs$coefficients) %like% "lag"]
 
     # Initialize ect_x with the first term
@@ -74,13 +76,18 @@ get_ect_systemfit <- function(systemfit_uecm_coefs, sel_variables) {
 ##################################################
 recm_systemfit <- function(
     col_names = c(),
-    ect,
+    uecm_model,
     method = "SUR",
     method_solv = "EViews",
     iterations = 1,
     table = data.table::data.table()) {
     diff_cols <- c()
     dt <- table
+
+    # get and incorporate ECT from UECM
+    ect_test <- get_ect_systemfit(systemfit_uecm_coefs = uecm_model, sel_variables = col_names)
+    dt <- cbind(dt, ect_test)
+    ect <- dt$ect_test
 
     for (col in col_names) {
         # Add diff column
@@ -92,7 +99,6 @@ recm_systemfit <- function(
     # Construct formula string
     formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect), collapse = " + "))
     # Run systemfit model
-
     ifelse(method == "3SLS",
         control_system <- systemfit::systemfit.control(
             methodResidCov = "noDfCor",
@@ -115,16 +121,26 @@ recm_systemfit <- function(
 
 ##################################################
 # Example usage:
+# Define dataset of usage (data.table required) and selected variables for coint. analysis. The dependant var should be listed first.
 table_dt <- fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")[reporter == "Spain" & tech == "HIGH"]
 sel_variables <- c("tech_exports", "fincome", "rprices")
 
-pre_exp <- uecm_systemfit(table = table_dt, col_names = sel_variables, nlags = 2, method = "SUR")
-coef_exp <- pre_exp$coefficients
+# Get an Unrestricted ECM using systemfit methods
+pre_exp <- uecm_systemfit(
+    table = table_dt,
+    col_names = sel_variables,
+    nlags = 2,
+    method = "SUR",
+    iterations = 1
+)
 
-ect_test <- get_ect_systemfit(systemfit_uecm_coefs = pre_exp, sel_variables = sel_variables)
-
-table_dt <- cbind(table_dt, ect_test)
-
-pos_exp <- recm_systemfit(table = table_dt, col_names = sel_variables, ect = table_dt$ect_test, method = "SUR") %>%
+# Get a restricted ECM using systemfit methods
+pos_exp <- recm_systemfit(
+    table = table_dt,
+    uecm_model = pre_exp,
+    col_names = sel_variables,
+    method = "SUR",
+    iterations = 1
+) %>%
     summary() %>%
     print()
