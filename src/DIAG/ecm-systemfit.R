@@ -1,8 +1,22 @@
-# Ecm for systemfit
-
+# Ensure the data.table package is loaded
+library(data.table)
+library(plm)
+library(systemfit)
 library(magrittr)
 
-##################################################
+#' Unrestricted Error Correction Model for Systemfit
+#'
+#' Computes the Unrestricted Error Correction Model for Systemfit.
+#'
+#' @param col_names A character vector of column names.
+#' @param nlags An integer specifying the number of lags.
+#' @param method Character string indicating the desired estimation method.
+#' @param method_solv Character string indicating the solution method. Default is "EViews".
+#' @param iterations An integer indicating the number of iterations.
+#' @param dt A data.table object containing the data.
+#'
+#' @return A model result from systemfit.
+#' @exports
 uecm_systemfit <- function(
     col_names = c(),
     nlags = 1,
@@ -51,8 +65,17 @@ uecm_systemfit <- function(
     return(lm_result)
 }
 
-#################################################
-get_ect_systemfit <- function(systemfit_uecm_coefs, sel_variables) {
+
+#' Extract Error Correction Term from Systemfit Model
+#'
+#' Computes the Error Correction Term from Unrestricted ECM coefficients.
+#'
+#' @param systemfit_uecm_coefs A list containing coefficients from UECM.
+#' @param sel_variables A character vector of selected variable names.
+#'
+#' @return A data.table object containing the error correction term.
+#' @export
+get_ect_systemfit <- function(systemfit_uecm_coefs, sel_variables, table_dt) {
     coef_exp <- systemfit_uecm_coefs$coefficients
 
     lags_x <- coef_exp[names(systemfit_uecm_coefs$coefficients) %like% "lag"]
@@ -71,7 +94,20 @@ get_ect_systemfit <- function(systemfit_uecm_coefs, sel_variables) {
     return(transf)
 }
 
-##################################################
+#' Restricted Error Correction Model for Systemfit
+#'
+#' Computes the Restricted Error Correction Model for Systemfit.
+#'
+#' @param col_names A character vector of column names.
+#' @param uecm_model An object of class systemfit, representing the UECM model.
+#' @param method Character string indicating the desired estimation method.
+#' @param method_solv Character string indicating the solution method. Default is "EViews".
+#' @param iterations An integer indicating the number of iterations.
+#' @param nlags An integer specifying the number of lags.
+#' @param dt A data.table object containing the data.
+#'
+#' @return A model result from systemfit.
+#' @export
 recm_systemfit <- function(
     col_names = c(),
     uecm_model,
@@ -86,7 +122,8 @@ recm_systemfit <- function(
     # get and incorporate ECT from UECM
     ect_test <- get_ect_systemfit(
         systemfit_uecm_coefs = uecm_model,
-        sel_variables = col_names
+        sel_variables = col_names,
+        table_dt = dt
     )
     dt <- cbind(dt, ect_test)
     ect <- dt$ect_test
@@ -136,7 +173,16 @@ recm_systemfit <- function(
     return(lm_result)
 }
 
-######################################
+
+#' Bounds F-Test for Systemfit Error Correction Model
+#'
+#' Applies the Bounds F-Test to the system equations based on Pesaran (2001).
+#'
+#' @param system_ecm An object of class systemfit, representing the ECM.
+#' @param units A character vector specifying the units or entities for the model.
+#'
+#' @return A numeric vector with F-test results for each unit.
+#' @export
 systemfit_boundsF_test <- function(
     system_ecm,
     units) {
@@ -152,7 +198,7 @@ systemfit_boundsF_test <- function(
 ##################################################
 # Example usage:
 # Define dataset of usage (data.table required) and selected variables for coint. analysis. The dependant var should be listed first.
-table_dt <- fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")[tech == "HIGH"]
+table_dt <- data.table::fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")[tech == "HIGH"]
 countries <- c("Austria", "Finland", "France", "Germany", "Greece", "Italy", "Netherlands", "Portugal", "Spain")
 sel_variables <- c("tech_exports", "rprices", "fincome")
 lags <- 2
