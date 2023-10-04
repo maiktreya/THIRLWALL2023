@@ -149,8 +149,6 @@ systemfit_boundsF_test <- function(
     return(bound_interx)
 }
 
-
-
 ##################################################
 # Example usage:
 # Define dataset of usage (data.table required) and selected variables for coint. analysis. The dependant var should be listed first.
@@ -170,7 +168,7 @@ pre_exp <- uecm_systemfit(
     method_solv = "EViews" # only 3sls
 )
 
-# Get a restricted ECM using systemfit methods
+# Get a Restricted ECM using systemfit methods
 pos_exp <- recm_systemfit(
     uecm_model = pre_exp,
     dt = table_dt,
@@ -183,7 +181,7 @@ pos_exp <- recm_systemfit(
     summary() %>%
     print()
 
-# Apply and F Bound-Test for equations in systems following Pesaran (2001)
+# Finally, apply and F Bound-Test for equations in systems following Pesaran (2001)
 bounds_F_results <- systemfit_boundsF_test(
     system_ecm = pos_exp,
     units = countries
