@@ -1,11 +1,5 @@
-# Ensure the data.table package is loaded
-library(data.table)
-library(plm)
-library(systemfit)
-library(magrittr)
-
 #' Unrestricted Error Correction Model for Systemfit
-#'
+#' @importFrom rlang :=
 #' Computes the Unrestricted Error Correction Model for Systemfit.
 #'
 #' @param col_names A character vector of column names.
@@ -14,16 +8,18 @@ library(magrittr)
 #' @param method_solv Character string indicating the solution method. Default is "EViews".
 #' @param iterations An integer indicating the number of iterations.
 #' @param dt A data.table object containing the data.
+#' @param inst_list List of instruments for 2SLS and 3SLS.
 #'
 #' @return A model result from systemfit.
-#' @exports
+#' @export
 uecm_systemfit <- function(
     col_names = c(),
     nlags = 1,
     method = "SUR",
     method_solv = "EViews",
     iterations = 1,
-    dt = data.table::data.table()) {
+    dt = data.table::data.table(),
+    inst_list = c()) {
     diff_cols <- c()
     all_lag_cols <- c()
 
@@ -36,32 +32,47 @@ uecm_systemfit <- function(
         # Add lag columns for each lag value
         for (lag in 1:nlags) {
             lag_col <- paste0(col, "_lag", lag)
-            dt[, (lag_col) := shift(get(col), n = lag, type = "lag")]
+            dt[, (lag_col) := data.table::shift(get(col), n = lag, type = "lag")]
             all_lag_cols <- c(all_lag_cols, lag_col)
         }
     }
 
     # Construct formula string
     formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], all_lag_cols), collapse = " + "))
+    # Remove rows with NA values
+    dt <- dt[complete.cases(dt), ]
+    dt <- plm::pdata.frame(dt, index = c("reporter", "year"))
 
     # Run systemfit model
-    ifelse(method == "3SLS",
+    if (method == "3SLS") {
         control_system <- systemfit::systemfit.control(
             methodResidCov = "noDfCor",
             residCovWeighted = FALSE,
             maxiter = iterations,
             tol = 1e-5,
             method3sls = "EViews" # GLS(default), IV, GMM, SCHMIDT, EVIEWS
-        ),
+        )
+        lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system, inst = inst_list)
+    }
+    if (method == "2SLS") {
         control_system <- systemfit::systemfit.control(
             methodResidCov = "noDfCor",
             residCovWeighted = FALSE,
             maxiter = iterations,
             tol = 1e-5,
         )
-    )
-    dt <- plm::pdata.frame(dt, index = c("reporter", "year"))
-    lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system)
+        lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system, inst = inst_list)
+    }
+    if (method == "SUR") {
+        control_system <- systemfit::systemfit.control(
+            methodResidCov = "noDfCor",
+            residCovWeighted = FALSE,
+            maxiter = iterations,
+            tol = 1e-5,
+        )
+        lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system)
+    }
+
     return(lm_result)
 }
 
@@ -105,6 +116,7 @@ get_ect_systemfit <- function(systemfit_uecm_coefs, sel_variables, table_dt) {
 #' @param iterations An integer indicating the number of iterations.
 #' @param nlags An integer specifying the number of lags.
 #' @param dt A data.table object containing the data.
+#' @param inst_list List of instruments for 2SLS and 3SLS.
 #'
 #' @return A model result from systemfit.
 #' @export
@@ -115,7 +127,8 @@ recm_systemfit <- function(
     method_solv = "EViews",
     iterations = 1,
     nlags = 1,
-    dt = data.table::data.table()) {
+    dt = data.table::data.table(),
+    inst_list = c()) {
     diff_cols <- c()
     all_lag_cols <- c()
 
@@ -139,7 +152,7 @@ recm_systemfit <- function(
             # Add lag columns for each lag value
             for (lag in 2:nlags) {
                 lag_col <- paste0(col, "_lag", lag)
-                dt[, (lag_col) := shift(get(col), n = lag, type = "lag")]
+                dt[, (lag_col) := data.table::shift(get(col), n = lag, type = "lag")]
                 all_lag_cols <- c(all_lag_cols, lag_col)
             }
         }
@@ -150,26 +163,40 @@ recm_systemfit <- function(
         formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect, all_lag_cols), collapse = " + ")),
         formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect), collapse = " + "))
     )
+    # Remove rows with NA values
+    dt <- dt[complete.cases(dt), ]
+    # Run systemfit model
+    dt <- plm::pdata.frame(dt, index = c("reporter", "year"))
 
     # Run systemfit model
-    ifelse(method == "3SLS",
+    if (method == "3SLS") {
         control_system <- systemfit::systemfit.control(
             methodResidCov = "noDfCor",
             residCovWeighted = FALSE,
             maxiter = iterations,
             tol = 1e-5,
             method3sls = "EViews" # GLS(default), IV, GMM, SCHMIDT, EVIEWS
-        ),
+        )
+        lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system, inst = inst_list)
+    }
+    if (method == "2SLS") {
         control_system <- systemfit::systemfit.control(
             methodResidCov = "noDfCor",
             residCovWeighted = FALSE,
             maxiter = iterations,
             tol = 1e-5,
         )
-    )
-    # Run systemfit model
-    dt <- plm::pdata.frame(dt, index = c("reporter", "year"))
-    lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system)
+        lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system, inst = inst_list)
+    }
+    if (method == "SUR") {
+        control_system <- systemfit::systemfit.control(
+            methodResidCov = "noDfCor",
+            residCovWeighted = FALSE,
+            maxiter = iterations,
+            tol = 1e-5,
+        )
+        lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system)
+    }
     return(lm_result)
 }
 
@@ -194,6 +221,7 @@ systemfit_boundsF_test <- function(
 
     return(bound_interx)
 }
+
 
 ##################################################
 # Example usage:
