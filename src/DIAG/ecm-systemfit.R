@@ -80,8 +80,10 @@ recm_systemfit <- function(
     method = "SUR",
     method_solv = "EViews",
     iterations = 1,
+    nlags = 1,
     table = data.table::data.table()) {
     diff_cols <- c()
+    all_lag_cols <- c()
     dt <- table
 
     # get and incorporate ECT from UECM
@@ -89,15 +91,28 @@ recm_systemfit <- function(
     dt <- cbind(dt, ect_test)
     ect <- dt$ect_test
 
+
+    # Add lag columns for each lag value
+    # Construct formula string
     for (col in col_names) {
         # Add diff column
         diff_col <- paste0(col, "_diff")
         dt[, (diff_col) := diff(c(NA, get(col)))]
         diff_cols <- c(diff_cols, diff_col)
     }
-    # Add lag columns for each lag value
-    # Construct formula string
-    formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect), collapse = " + "))
+
+    if (nlags >= 2) {
+        # Add lag columns for each lag value
+        for (lag in 2:nlags) {
+            lag_col <- paste0(col, "_lag", lag)
+            dt[, (lag_col) := shift(get(col), n = lag, type = "lag")]
+            all_lag_cols <- c(all_lag_cols, lag_col)
+        }
+        formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect, all_lag_cols), collapse = " + "))
+    } else {
+        formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect), collapse = " + "))
+    }
+
     # Run systemfit model
     ifelse(method == "3SLS",
         control_system <- systemfit::systemfit.control(
