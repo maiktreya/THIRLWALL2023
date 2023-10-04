@@ -48,6 +48,7 @@ uecm_systemfit <- function(
             tol = 1e-5,
         )
     )
+    dt <- plm::pdata.frame(dt, index = c("reporter", "year"))
     lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system)
     return(lm_result)
 }
@@ -131,6 +132,7 @@ recm_systemfit <- function(
         )
     )
     # Run systemfit model
+    dt <- plm::pdata.frame(dt, index = c("reporter", "year"))
     lm_result <- systemfit::systemfit(as.formula(formula_str), data = dt, method = method, control = control_system)
     return(lm_result)
 }
@@ -138,7 +140,7 @@ recm_systemfit <- function(
 ##################################################
 # Example usage:
 # Define dataset of usage (data.table required) and selected variables for coint. analysis. The dependant var should be listed first.
-table_dt <- fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")[reporter == "Spain" & tech == "HIGH"]
+table_dt <- fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")[tech == "HIGH"]
 sel_variables <- c("tech_exports", "fincome", "rprices")
 lags <- 2
 iterations <- 1
