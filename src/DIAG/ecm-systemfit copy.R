@@ -146,16 +146,14 @@ pos_exp <- recm_systemfit(
     print()
 
 
-
-bound_test_x <- data.table()
-bound_interx <- c()
-countries <- c("Spain")
-for (m in tech) {
-    for (n in seq_along(countries)) {
+systemfit_boundsF_test <- function(
+    system_ecm,
+    units) {
+    bound_interx <- c()
+    for (n in seq_along(units)) {
         ##### BOUND TEST ESTIMATION
         bound_interx[n] <- aod::wald.test(b = coef(pre_exp$eq[[n]]), Sigma = vcov(pre_exp$eq[[n]]), Terms = 2:4)$result$chi2[1] / 3
     }
-    bound_test_x <- cbind(bound_test_x, bound_interx)
-    colnames(bound_test_x)[ncol(bound_test_x)] <- paste0(m, "_x")
+
+    return(bound_interx)
 }
-bound_test_x <- cbind(countries, bound_test_x)

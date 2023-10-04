@@ -1,8 +1,6 @@
 # Ecm for systemfit
 
 library(magrittr)
-library(data.table)
-library(systemfit)
 
 ##################################################
 uecm_systemfit <- function(
@@ -95,25 +93,26 @@ recm_systemfit <- function(
 
 
     # Add lag columns for each lag value
-    # Construct formula string
     for (col in col_names) {
         # Add diff column
         diff_col <- paste0(col, "_diff")
         dt[, (diff_col) := diff(c(NA, get(col)))]
         diff_cols <- c(diff_cols, diff_col)
+        if (nlags >= 2) {
+            # Add lag columns for each lag value
+            for (lag in 2:nlags) {
+                lag_col <- paste0(col, "_lag", lag)
+                dt[, (lag_col) := shift(get(col), n = lag, type = "lag")]
+                all_lag_cols <- c(all_lag_cols, lag_col)
+            }
+        }
     }
 
-    if (nlags >= 2) {
-        # Add lag columns for each lag value
-        for (lag in 2:nlags) {
-            lag_col <- paste0(col, "_lag", lag)
-            dt[, (lag_col) := shift(get(col), n = lag, type = "lag")]
-            all_lag_cols <- c(all_lag_cols, lag_col)
-        }
-        formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect, all_lag_cols), collapse = " + "))
-    } else {
+    # Construct formula string
+    ifelse(nlags >= 2,
+        formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect, all_lag_cols), collapse = " + ")),
         formula_str <- paste(diff_cols[1], "~", paste(c(diff_cols[-1], ect), collapse = " + "))
-    }
+    )
 
     # Run systemfit model
     ifelse(method == "3SLS",
@@ -137,11 +136,27 @@ recm_systemfit <- function(
     return(lm_result)
 }
 
+######################################
+systemfit_boundsF_test <- function(
+    system_ecm,
+    units) {
+    bound_interx <- c()
+    for (n in seq_along(units)) {
+        ##### BOUND TEST ESTIMATION
+        bound_interx[n] <- aod::wald.test(b = coef(pre_exp$eq[[n]]), Sigma = vcov(pre_exp$eq[[n]]), Terms = 2:4)$result$chi2[1] / 3
+    }
+
+    return(bound_interx)
+}
+
+
+
 ##################################################
 # Example usage:
 # Define dataset of usage (data.table required) and selected variables for coint. analysis. The dependant var should be listed first.
 table_dt <- fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")[tech == "HIGH"]
-sel_variables <- c("tech_exports", "fincome", "rprices")
+countries <- c("Austria", "Finland", "France", "Germany", "Greece", "Italy", "Netherlands", "Portugal", "Spain")
+sel_variables <- c("tech_exports", "rprices", "fincome")
 lags <- 2
 iterations <- 1
 
@@ -167,3 +182,9 @@ pos_exp <- recm_systemfit(
 ) %>%
     summary() %>%
     print()
+
+# Apply and F Bound-Test for equations in systems following Pesaran (2001)
+bounds_F_results <- systemfit_boundsF_test(
+    system_ecm = pos_exp,
+    units = countries
+) %>% print()
