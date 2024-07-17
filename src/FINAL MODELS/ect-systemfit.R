@@ -1,4 +1,5 @@
 ############################## NEEDED PACKAGES, DATA AND INITIAL PARAMENTERS #################################################
+library(data.table)
 source("src/FINAL MODELS/EQUATIONS/eqs_UECM.R")
 coef_exp <- coef_imp <- pre_exp <- pre_imp <- pre_imp2 <- pre_imp3 <- pre_weak <- pos_weak <- list()
 
