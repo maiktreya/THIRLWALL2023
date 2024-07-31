@@ -1,0 +1,108 @@
+
+## Comments on article submitted to CJE for revision. Day recieved: 1st feb. Deadline: 1July
+
+Dear Dr GARCIA DUCH,
+
+Manuscript ID CJE-2023-154 entitled "Balance of Payments Constrained Growth in the Eurozone: Evidence on Multi-Sector Thirlwall’s Law for a Sample of 9 Founding Euro Countries, 1992-2019.", which you submitted to the Cambridge Journal of Economics, has been reviewed.  
+
+Thank you for sending your paper to the Cambridge Journal of Economics. The CJE editors have now received and considered the referees' reports. While they cannot accept your paper as it stands for publication, they feel that a revised version, addressing the points made by the referees, may be of interest to them (although for legal reasons I have to say that this is not a commitment to publish). Comments from the referees are included at the end of this message.
+
+HOW TO REVISE AND RESUBMIT YOUR MANUSCRIPT:
+
+To revise your manuscript, log into https://mc.manuscriptcentral.com/cje, enter your Author Centre and click on 'Create a Revision'.  Your manuscript number will then be appended to denote a revision.
+
+Please highlight the changes to your manuscript by using the track changes mode in MS Word, or by using bold or coloured text, then upload the new version. You are advised to save a copy on your own computer. Please make sure that your revised manuscript has been properly anonymised.
+
+When submitting your revised manuscript, you will be able to respond to the comments made by the referees in the space provided.  You can use this space to document any changes you make to the original manuscript.  In order to expedite the processing of the revised manuscript, please be as specific as possible in your response. Please ensure that this section of your submission is anonymised.
+
+If it is not possible for you to submit your revision within six months it may be necessary to consider your revised paper as a new submission. If you anticipate taking some time to complete your revisions, please do contact me by email (replying to this email will reach me).
+
+Once again, thank you for submitting your manuscript to the Cambridge Journal of Economics and I look forward to receiving your revision.
+
+Yours sincerely,
+
+Jacqui Lagrue
+Managing Editor
+Cambridge Journal of Economics
+cje@cpes.org.uk
+
+-------------------------------------------------------------------------------------------------------
+
+REFEREE COMMENTS TO AUTHOR:
+
+Referee 1:
+
+    Comments to the Author
+    Review of “Balance of Payments Constrained Growth in the Eurozone: Evidence on Multi-Sector Thirlwall’s Law for a Sample of 9 Founding Euro Countries, 1992-2019” (CJE-2023-154).
+    
+    The paper under review empirically estimates a multisectoral balance-of-payments-constrained output growth model for a sample of nine Eurozone for the period spanning from 1992 to 2019. Employing a widely-used classification of economic sectors according to their technological level developed by Lall (2000), the paper empirically estimates separate equations for the demand for exports and the demand for imports using different econometric techniques in order to obtain the respective income elasticities. These elasticities are then used to compute the output growth rates of the sample countries predicted by both the aggregate and the multisectoral versions of the Thirlwall law. Using suitable econometric procedures, the final step of the empirical strategy followed by the author(s) is to regress the actual growth rates of the sample countries on the respective output growth rates predicted by both versions of the Thirlwall law. The main finding is that the actual output growth rate experienced by most of the sample Eurozone countries during the considered period is well predicted by both versions of the Thirlwall law, but the predictive power of the multisectoral version is higher.
+    
+    I think that the paper under review deals with theoretical and especially empirical issues that are of considerable interest to readers of the Cambridge Journal of Economics. In fact, the multisectoral version of the Thirlwall law was originally derived and presented in a paper published in the Cambridge Journal of Economics, and several papers empirically estimating it for individual or sample of countries were also published in this same outlet.
+    
+    The paper can also be seen as relatively well motivated and sufficiently well executed technically-wise, although there is room for improvement analytically-wise. The paper is potentially publishable as it currently stands, and I will submit to the careful consideration of the author(s) the general and specific comments and suggestions for revision that follow. I think that the preparation of a properly revised version of the paper taking all such comments and suggestions into due account is a necessary condition for it to be possibly reconsidered for publication in this journal.
+    
+    In order to facilitate exposition and communication of my comments and suggestions that follow, the first set of brackets is used to indicate the number of the comment or suggestion, while the second set of brackets is employed to denote the corresponding page number(s).
+    
+    ✘ [1] [1] Let me start with three more general comments. First, an abstract is missing in the copy of the paper to which I had access. Second, the author(s) could consider shortening a bit the title of the paper. Third, the paper should have its grammar and spelling properly checked. 
+    ☐ done.
+    ✘ [2] [2-3] It would add further substance to the motivation of the paper if the author(s) could elaborate a bit more on the assertion that the “the Eurozone presents an intriguing case study”. More precisely, given the theoretical approach followed by the author(s) in the paper, which is the balance-of-payments-constrained approach to output growth, what is specifically intriguing about the Eurozone as a case study”?
+    the Eurozone is interesting due to the existence of a monetary union without rescue mechanisms in case any of the members reports unsustainable deficits neither has a fiscal union as in all preceding cases.
+    ✘ [3] [5] Strictly speaking, what Equation (3) implies is that the current account has to be exactly (instead of on average, as stated in the paper) balanced in the long run. There are some recent alternative interpretations of the Thirlwall law that assert that the operation of the law is compatible with the current account equilibrium condition in Equation (3) being satisfied ‘on average’ in the long run (see, e.g., the recent papers on the Thirlwall law by Marwil Dávila-Fernández and Serena Sordi from the University of Siena in Italy). However, mathematically speaking, the Thirlwall law as usually derived assumes that the current account equilibrium condition in Equation (3) is required to be exactly satisfied in the long run. Anyway, given the purpose of the paper under review, my suggestion is that the sentence right after Equation (3) is revised to simply remove the wordings “implicitly” and “in average”. 
+    my suggestion is that the sentence right after Equation (3) is revised to simply remove the wordings “implicitly” and “in average”. done
+    ✘ [4] [9] As the paper under review recognizes that its closest antecedent in the literature is the paper by Romero and McCombie (2016), readers would appreciate to see more elaboration on the similarities and differences between the two contributions, especially with respect to the econometric strategies used and the main findings. 
+    the similarities and differences between the two contributions, especially with respect to the econometric strategies used and the main findings. Romero and McCombie (2016)
+    ✘ [5] [10] Some readers are likely to wonder why the author(s) did not use a version of the balance-of-payments-constrained output growth model featuring capital flows in addition to trade flows. After all, as a union, the EU is characterized by inexistence of most barriers to the movement of capital. I do understand that there is no available version of the multisectoral balance-of-payments-constrained output growth model featuring capital flows in addition to trade flows, and the main contribution of the paper is precisely in estimating the multisectoral version of the Thirlwall law. However, I think that the author(s) could elaborate a bit on why the paper abstracts from capital flows in the estimations. 
+    I think that the author(s) could elaborate a bit on why the paper abstracts from capital flows in the estimations. 
+    ✘ [6] [10] Given the European sovereign debt crisis that began in 2008 and peaked between 2010 and 2012, readers are likely to wonder why the estimations carried out by the author(s) for the whole period did not include structural break tests. Incidentally, both the global financial crisis of 2007-2009 and the European sovereign debt crisis that began in 2008 and peaked between 2010 and 2012 have a bearing on the issue that I raised in my previous comment regarding why the author(s) did not use a version of the balance-of-payments-constrained output growth model featuring capital flows in addition to trade flows. But as mentioned in my previous comment, I think that the author(s) could simply elaborate a bit on why the paper abstracts from capital flows in the estimations. 
+    Why the estimations carried out by the author(s) for the whole period did not include structural break tests.
+    ✘ [7] [10] The paper mentions that one of its contributions is to be “the first to consider the implications of excluding services from the conventional commodity classification utilized in MSTL studies”. I think that the author(s) should elaborate a bit on what features of the service sector (in the Eurozone or elsewhere) are intrinsically relevant to justify the importance or necessity of excluding it from an empirical estimation of the multisectoral version of the Thirlwall law.
+    elaborate a bit on what features of the service sector (in the Eurozone or elsewhere) are intrinsically relevant to justify the importance or necessity of excluding it from an empirical estimation of the multisectoral version of the Thirlwall law
+    -> Because of the growing importance of services providing an important inflow aliviating otherwise negative trade balances on commodities. To illustrate this, the case of tourism for Southern european countries is paradigmatic, especially in places where this balacing effect is especially remarkable as in Spain
+    ✘ [8] [11] The paper claims to be following previous literature (Lanzafame, 2014) in imposing a common ARDL structure to all equations for homogeneity reasons”. I think that the author should elaborate a bit on the substantive reasons justifying the validity or necessity of so imposing in addition to simply mentioning that previous literature is being followed in that regard. 
+    Regarding the common ARDL specification
+    ✘ [9] [12] In order to deal with the endogeneity involved in the estimation of the demand for imports, consumption and total exports were used as instruments of income. Could not investment and government expenditures (also in growth rates) also be used as additional instrumental variables that are components of aggregate demand? 
+    -> Regarding the exclusion of G and I as instruments for the estimation of income was rooted in their strong non-stationarity during the period of analysis rooted in 2 related causes: the explosion of the crisis (especially remarkable for investment) and the subsequent impostion for a few EU members of structural adjustment plans which deeply biased the ammount of public expending dooming its utiliy as instrument. 
+    ✘ [10] [12] Also requiring proper justification is the use by the author of the average output growth rate of the EU-15 excluding the nine sample Eurozone countries as proxy for the growth of foreign income. Why did not the author(s) also consider other trading partners of the sample Eurozone countries? 
+    Explain the proxy of foreign income, why not foreign partners
+    -> take care! as the other reviewer highlights this clarification but proposing instead the use of world income!
+    ✘ [11] [13-18] As several descriptive indicators on foreign trade of the sample countries are nicely summarized in those pages of the paper, they could had been more intensively and extensively used in the analysis of the estimation results.
+    done. (underusage of information from descriptive tables)
+    ✔ [12] [18-32] The estimation results are clearly presented in those pages, but I think that the author(s) could add more analytical substance by comparing those results with others obtained in the related literature either for individual countries or sample of countries. For instance, as recognized by the author(s) on page 9, the paper by Romero and McCombie (2016) estimating the multisectoral version of the Thirlwall law for a sample of fourteen Western European countries is the closest antecedent of the paper under review.
+    compare results to the ones obtained by related liteature, especially Romero and McCombie (2015)
+    ✘ [13] [34] I think that the author(s) could provide some brief thoughts and reflections on the following issue in the concluding section: what would be some of the institutional changes that should be made to the design of the European Union if the government leaders with the power to do so could be convinced that the best explanation for the growth performance of the sample of Eurozone countries considered in this paper (and maybe of the Eurozone as a whole) is provided by the balance-of-payments-constrained approach to growth, either in the aggregate or the multisectoral version of the Thirlwall law?
+    -> In case EU leaders would have followed a BPCG oriented policy, two measures would have clearly outstanded: a) The need to complete the monitary union both through a fiscal union and the upgrade of the ECB to an unconditional lender of last resort for States to diminish systemic risk and diminish financial presure flatting prime of risks almost for free in weaker countries.
+    -> Aditionally, the other policy which would have played a central role would be the recovery of industrial policy applying and certainly considered "dumping policies" (as USA and chiha already does) to help structural competitivity convergence instead of paliating its effects through structural funds as regional policies have been conceptualized under this optic since its inception until nowadays
+    ✘ [14] A final comment. In some passages of the paper vague reference is made to ‘demand elasticities’ without clearly specifying whether the reference is to income elasticities of the demand for exports or imports, or both.
+    Revise references to demand elasticites without specifying if they were for exports or for imports.
+
+Referee 2:
+
+Comments to the Author
+The paper investigates the validity of the Multi-Sectoral Thirlwall’s Law for Eurozone countries over the period 1992-2019. The paper is well written and presents a good discussion of the literature. Moreover, the topic has not been fully explored for this group of countries. Nonetheless, the paper still needs some improvements.
+
+    - Main comments:
+    ✔ (1) When analyzing the results in terms of the growth rates predicted by the law, the authors have not analyzed if the direction of the difference is correctly associated to the result of the country’s trade balance. If the actual growth rate is above the one predicted by Thirlwall’s Law, this means the country should be running trade deficits. Analogously, if the actual growth rate is lower than the one predicted by the law, this means the country should be running trade surpluses. Interestingly, negative values are found for Greece, Portugal and Italy, but not Spain. Contrary to what expected, Germany and Finland present negative values as well. A deeper discussion of these results would be interesting and complement the paper. (It would also be interesting to estimate the elasticities before and after the 2010 crisis – I leave this as a suggestion).
+    If the actual growth rate is above the one predicted by Thirlwall’s Law, this means the country should be running trade deficits. Analogously, if the actual growth rate is lower than the one predicted by the law, this means the country should be running trade surpluses. Interestingly, negative values are found for Greece, Portugal and Italy, but not Spain. Contrary to what expected, Germany and Finland present negative values as well. A deeper discussion of these results would be interesting and complement the paper
+    ✘ (2) In page 12, in the section on data, the authors state that foreign income was measured as the “average growth rate of the EU-15 after subtracting the part corresponding to the reporter”. Nonetheless, the usual specification is to use world income. The author should either provide an explanation for this decision or provide some robustness tests using income of the rest of the world as foreign income.
+    The author should either provide an explanation for this decision or provide some robustness tests using income of the rest of the world as foreign income.
+    ✔ (3) In page 13, the procedures carried out to calculate relative prices are not clear. How exactly were unitary values estimated? Why product prices were calculated as the difference between the growth of unitary prices and the growth of its real volume?
+    Explain the procedure use to calculate relative prices. How exactly were unitary values estimated? Why product prices were calculated as the difference between the growth of unitary prices and the growth of its real volume?
+    ✘ (4) In page 23 it stated that: “Due to the extensive size of the tables presenting the results, the obtained estimations are included in Annex 1”. Nonetheless, since these are the main regressions of the paper, Tables 5A and 6A should be moved to the body of the text.
+    Tables 5A and 6A should be moved to the body of the text.
+    ✘ (5) Some of the price elasticities turned out positive, contrary to what expected. Nonetheless, as prices were calculated from unit value prices, they might be capturing changes in quality (see Bottega and Romero, 2021). This could be mentioned as an explanation in the paper.
+    Positive price elasticites might be capturing changes in quality (see Bottega and Romero, 2021). This could be mentioned as an explanation in the paper.
+    - Minor corrections:
+    ✘ (1) The last paragraph of page 9 should be moved to the introduction to highlight the contributions of the paper from the start.
+    
+    ✘ (2) In page 23, second paragraph, its written that the income elasticity of high-tech exports for Greece is 1.49 with a p-value around 0.25. These values are different from the ones in Table 5A. They should be corrected to match the values in the table.
+    
+    ✘ (3) In page 27 and Table 7, the elasticities ratio is called TL ratio. For clarity, it would be preferable to call it elasticities ratio.
+    
+    ✘ (4) In page 27, second paragraph, there is a reference to McCombie and Romero (2016), but the correct is Romero and McCombie (2016).
+    
+    ✘ (5) The elasticities ratio was not introduced in Table 7 for the Ameco regressions. It should be reported as well.
+    
+    ✘ (6) Table 8 is not mentioned in the text. It should be mentioned explicitly while analysing the results reported in it.
+
+Reference
+Bottega, A. C.; Romero, J. P. Innovation, export performance and trade elasticities across different sectors. Structural Change and Economic Dynamics, 2021.
