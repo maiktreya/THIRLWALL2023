@@ -51,4 +51,4 @@ for (i in tech) {
 }
 ect_table <- merge(ect_table_prem, ect_table_prex)
 
-fwrite(ect_table, "Data/.CSV/COMTRADE/eudata_final_ect.csv") # nolint
+fwrite(ect_table, "Data/CSV/COMTRADE/eudata_final_ect.csv") # nolint

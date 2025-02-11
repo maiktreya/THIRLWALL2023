@@ -3,7 +3,7 @@ library("magrittr")
 library("data.table")
 library("urca")
 library("plm")
-eu_data <- fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")
+eu_data <- fread("Data/CSV/COMTRADE/eudata_final_nom.csv")
 eu_data[, tech_imports := log(msum) - mprices / 100 - log(xrate)]
 eu_data[, tech_exports := log(xsum) - xprices / 100 - log(xrate)]
 eu_data[, dummy := 0]

@@ -6,7 +6,7 @@ countries <- c("Austria", "Finland", "France", "Germany", "Greece", "Italy", "Ne
 tech <- c("PRIM", "RES", "LOW", "MED", "HIGH")
 
 ############# GET DATA TO CALCULATE MEAN GROWTH RATES ##############################################
-eu_data <- fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")
+eu_data <- fread("Data/CSV/COMTRADE/eudata_final_nom.csv")
 eu_data[, tech_imports := log(msum) - mprices / 100 - log(xrate)]
 eu_data[, tech_exports := log(xsum) - xprices / 100 - log(xrate)]
 eu_data <- eu_data[reporter %in% countries]

@@ -233,7 +233,7 @@ library(magrittr) # For piping with %<% without dplyr dependencies
 library(aod) # for performing F Bounds test
 
 # Define dataset of usage (data.table required) and selected variables for coint. analysis. The dependant var should be listed first.
-table_dt <- data.table::fread("Data/.CSV/COMTRADE/eudata_final_nom.csv")[tech == "HIGH"]
+table_dt <- data.table::fread("Data/CSV/COMTRADE/eudata_final_nom.csv")[tech == "HIGH"]
 countries <- c("Austria", "Finland", "France", "Germany", "Greece", "Italy", "Netherlands", "Portugal", "Spain")
 sel_variables <- c("tech_exports", "rprices", "fincome")
 lags <- 2

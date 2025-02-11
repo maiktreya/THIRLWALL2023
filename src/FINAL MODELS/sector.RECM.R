@@ -2,7 +2,7 @@
 source("src/FINAL MODELS/EQUATIONS/eqs_RECM.R")
 
 source("src/LIBRARY/functions2023.R")
-ect <- fread("Data/.CSV/COMTRADE/eudata_final_ect.csv")
+ect <- fread("Data/CSV/COMTRADE/eudata_final_ect.csv")
 countries <- c("Austria", "Finland", "France", "Germany", "Greece", "Italy", "Netherlands", "Portugal", "Spain")
 tech <- c("PRIM", "RES", "LOW", "MED", "HIGH")
 eu_data <- merge(eu_data, ect)
