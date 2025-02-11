@@ -5,4 +5,4 @@
 
 tmp <- installed.packages()
 installedpackages <- as.vector(tmp[is.na(tmp[, "Priority"]), 1])
-save(installedpackages, file = paste0(getwd(), "/SAVES/SAVED.PACKAGES/installed_packages.rda"))
+save(installedpackages, file = paste0(getwd(), "/Rdata/installed_packages.rda"))
