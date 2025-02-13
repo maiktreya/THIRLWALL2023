@@ -48,5 +48,5 @@
   "editor.fontSize": 10,
   "editor.minimap.enabled": false,
   "terminal.integrated.fontSize": 10,
-  "workbench.colorTheme": "Atom One Light"
+  "workbench.colorTheme": "GitHub Light Default"
 }
