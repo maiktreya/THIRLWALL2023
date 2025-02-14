@@ -2,7 +2,7 @@
   "files.associations": {
     "*.rmd": "markdown"
   },
-  "r.rterm.linux": "/usr/local/bin/radian",
+  "r.rterm.linux": "/home/other/.local/bin/radian",
   "redhat.telemetry.enabled": true,
   "r.bracketedPaste": true,
   "r.plot.useHttpgd": true,
