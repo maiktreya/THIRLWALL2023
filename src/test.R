@@ -30,15 +30,50 @@ for (i in tech) {
     eu_data_panel$lag_inv <- lag(eu_data_panel$investment)
     eu_data_panel$lag_exp <- lag(eu_data_panel$exports)
 
-    pre_imp[[i]] <- systemfit(as.formula(imp_fun), data = eu_data_panel, inst = as.formula(inst_imp), method = "3SLS", control = control_system) # ,
-    pre_imp2[[i]] <- systemfit(as.formula(imp_fun), data = eu_data_panel, inst = as.formula(inst_imp), method = "2SLS", control = control_system) # ,
-    pre_exp2[[i]] <- systemfit(as.formula(exp_fun), data = eu_data_panel, method = "OLS", control = control_system1) # ,
-    pre_weak[[i]] <- systemfit(as.formula(imp_fun_pre), data = eu_data_panel, method = "OLS", control = control_system) # ,
-    pos_weak[[i]] <- systemfit(as.formula(imp_fun_pos), data = eu_data_panel, method = "OLS", control = control_system) # ,
+    # Removed trailing commas and fixed systemfit calls
+    pre_imp[[i]] <- systemfit(as.formula(imp_fun),
+        data = eu_data_panel,
+        inst = as.formula(inst_imp),
+        method = "3SLS",
+        control = control_system
+    )
+
+    pre_imp2[[i]] <- systemfit(as.formula(imp_fun),
+        data = eu_data_panel,
+        inst = as.formula(inst_imp),
+        method = "2SLS",
+        control = control_system
+    )
+
+    pre_exp2[[i]] <- systemfit(as.formula(exp_fun),
+        data = eu_data_panel,
+        method = "OLS",
+        control = control_system1
+    )
+
+    pre_weak[[i]] <- systemfit(as.formula(imp_fun_pre),
+        data = eu_data_panel,
+        method = "OLS",
+        control = control_system
+    )
+
+    pos_weak[[i]] <- systemfit(as.formula(imp_fun_pos),
+        data = eu_data_panel,
+        method = "OLS",
+        control = control_system
+    )
+
     coef_imp[[i]] <- pre_imp[[i]]$coefficients[names(pre_imp[[i]]$coefficients) %like% "dif_income"]
-    pre_exp[[i]] <- systemfit(as.formula(exp_fun), data = eu_data_panel, method = "SUR", control = control_system1)
+
+    pre_exp[[i]] <- systemfit(as.formula(exp_fun),
+        data = eu_data_panel,
+        method = "SUR",
+        control = control_system1
+    )
+
     coef_exp[[i]] <- pre_exp[[i]]$coefficients[names(pre_exp[[i]]$coefficients) %like% "dif_fincome"]
 }
+
 coef_exp <- setDT(coef_exp)[, reporter := countries]
 coef_imp <- setDT(coef_imp)[, reporter := countries]
 coef_imp <- melt.data.table(coef_imp, id.vars = "reporter")

@@ -1,13 +1,15 @@
 ###############################################
 # Define dataset of usage (data.table required) and selected variables for coint. analysis. The dependant var should be listed first.
-
 library(data.table) # for simple and performant data manipulation
 library(plm) # needed for systemfit to handle panel structure
 library(systemfit) # for FGLS system linear models
 library(magrittr) # For piping with %>% without dplyr dependencies
 library(aod) # for performing F Bounds test
-
 # install and import this library
+if (!requireNamespace("systemfitECM", quietly = TRUE)) {
+    unloadNamespace("systemfitECM")
+    devtools::install_github("iliciuv/systemfitECM", force = TRUE)
+}
 library(systemfitECM)
 
 # Create the sample dataset
@@ -24,6 +26,8 @@ table_dt <- data.table(
     consumption = rnorm(length(countries) * length(period), 40000, 5000) # Sample fincome data
 )
 
+# Convert data.table to data.frame
+
 # Set remaining control parameters
 sel_variables <- c("tech_exports", "rprices", "fincome") # first is dependant variable in systemfit
 instruments <- c("fincome", "investment", "consumption") # first is endogenous regressor and remaining their instruments.
@@ -32,22 +36,20 @@ estimation3SLS <- "EViews"
 lags <- 2
 iterations <- 1
 
-
 # Get an Unrestricted ECM using systemfit methods
 pre_exp <- uecm_systemfit(
-    dt = table_dt,
+    data = table_dt, # Changed to use data.frame instead of data.table
     col_names = sel_variables,
     nlags = lags,
-    grouping = "reporter",
+    method_solv = estimation3SLS, # only 3sls
     method = method,
     iterations = iterations,
-    method_solv = estimation3SLS, # only 3sls,
     inst_list = instruments # endo first, then remaining
 )
+
 pre_exp %>%
     summary() %>%
     print()
-
 
 # Apply and F Bound-Test for equations in systems following Pesaran (2001)
 bounds_F_results <- systemfit_boundsF_test(
@@ -55,9 +57,9 @@ bounds_F_results <- systemfit_boundsF_test(
     units = countries,
     sel_variables = sel_variables
 )
+
 bounds_F_results %>%
     print()
-
 
 # get an example panel series ECT
 ect_test <- get_ect_systemfit(
@@ -65,16 +67,16 @@ ect_test <- get_ect_systemfit(
     nperiods = length(period),
     nunits = length(countries),
     sel_variables = sel_variables,
-    table_dt = table_dt
+    table_dt = table_df # Changed to use data.frame
 )
+
 ect_test %>%
     print()
-
 
 # Finally, get a Restricted ECM using systemfit methods
 pos_exp <- recm_systemfit(
     uecm_model = pre_exp,
-    dt = table_dt,
+    data = table_df, # Changed to use data.frame
     col_names = sel_variables,
     nlags = lags,
     grouping = "reporter",
@@ -85,6 +87,7 @@ pos_exp <- recm_systemfit(
     method_solv = estimation3SLS, # only 3sls,
     inst_list = instruments # endo first, then remaining
 )
+
 pos_exp %>%
     summary() %>%
     print()
