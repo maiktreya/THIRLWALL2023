@@ -8,15 +8,14 @@ if (!requireNamespace("systemfitECM", quietly = TRUE)) {
     unloadNamespace("systemfitECM")
     devtools::install_github("iliciuv/systemfitECM", force = TRUE)
 }
-library(systemfitECM) # install and import this library
-
+library(systemfitECM)
 # Source equations and data preparation
 source("src/FINAL MODELS/EQUATIONS/eqs_UECM.R")
 
 # Setup parameters
 countries <- c("Austria", "Finland", "France", "Germany", "Greece", "Italy", "Netherlands", "Portugal", "Spain")
 tech <- c("PRIM", "RES", "LOW", "MED", "HIGH")
-pre_imp <- pre_exp <- list()
+pre_imp <- pre_exp <- coef_imp <- coef_exp <- list()
 
 ####################### ESTIMATE MODELS FOR EACH TECHNOLOGY LEVEL ###################################################
 for (i in tech) {
@@ -77,21 +76,17 @@ for (i in tech) {
     } else {
         data.frame(countries, setNames(data.frame(bounds_F_exp), paste0(i, "_x")))
     }
+    coef_imp[[i]] <- pre_imp[[i]]$coefficients[names(pre_imp[[i]]$coefficients) %like% "dif_income"]
+    coef_exp[[i]] <- pre_exp[[i]]$coefficients[names(pre_exp[[i]]$coefficients) %like% "dif_fincome"]
 }
 
-# Convert results to data.table format
-coef_imp <- lapply(tech, function(i) {
-    data.table(
-        reporter = countries,
-        tech = i,
-        coefs = pre_imp[[i]]$coefficients[grep("dif_income", names(pre_imp[[i]]$coefficients))]
-    )
-}) %>% rbindlist()
 
-coef_exp <- lapply(tech, function(i) {
-    data.table(
-        reporter = countries,
-        tech = i,
-        coefs = pre_exp[[i]]$coefficients[grep("dif_fincome", names(pre_exp[[i]]$coefficients))]
-    )
-}) %>% rbindlist()
+
+# Transform coef_imp and coef_exp following the approach used in test_old.R
+coef_exp <- setDT(coef_exp)[, reporter := countries]
+coef_imp <- setDT(coef_imp)[, reporter := countries]
+coef_imp <- melt.data.table(coef_imp, id.vars = "reporter")
+coef_exp <- melt.data.table(coef_exp, id.vars = "reporter")
+colnames(coef_exp) <- colnames(coef_imp) <- c("reporter", "tech", "coefs")
+coef_exp <- coef_exp[, .(reporter, tech, tech1 = tolower(tech), coefs)][order(reporter, tech1)][, .(reporter, tech = toupper(tech1), coefs)]
+coef_imp <- coef_imp[, .(reporter, tech, tech1 = tolower(tech), coefs)][order(reporter, tech1)][, .(reporter, tech = toupper(tech1), coefs)]
