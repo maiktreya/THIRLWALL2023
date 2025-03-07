@@ -9,13 +9,17 @@ if (!requireNamespace("systemfitECM", quietly = TRUE)) {
     devtools::install_github("iliciuv/systemfitECM", force = TRUE)
 }
 library(systemfitECM)
-# Source equations and data preparation
-source("src/FINAL MODELS/EQUATIONS/eqs_UECM.R")
 
 # Setup parameters
 countries <- c("Austria", "Finland", "France", "Germany", "Greece", "Italy", "Netherlands", "Portugal", "Spain")
 tech <- c("PRIM", "RES", "LOW", "MED", "HIGH")
+
+# Source equations and data preparation
+source("src/FINAL MODELS/EQUATIONS/eqs_UECM.R")
+
+# set empty data containers
 pre_imp <- pre_exp <- coef_imp <- coef_exp <- list()
+bound_test_m <- bound_test_x <- data.table()
 
 ####################### ESTIMATE MODELS FOR EACH TECHNOLOGY LEVEL ###################################################
 for (i in tech) {
@@ -48,34 +52,30 @@ for (i in tech) {
         iterations = 1,
     )
 
-    # Perform bounds testing
-    bounds_F_imp <- systemfit_boundsF_test(
+    ##### BOUND TEST ESTIMATION
+    bound_interm <- systemfit_boundsF_test(
         system_ecm = pre_imp[[i]],
         units = countries,
         sel_variables = sel_variables_imp
     )
-
-    bounds_F_exp <- systemfit_boundsF_test(
+    bound_interx <- systemfit_boundsF_test(
         system_ecm = pre_exp[[i]],
         units = countries,
         sel_variables = sel_variables_exp
     )
+    bound_test_m <- cbind(bound_test_m, bound_interm)
+    bound_test_x <- cbind(bound_test_x, bound_interx)
+    colnames(bound_test_m)[ncol(bound_test_m)] <- paste0(m, "_m")
+    colnames(bound_test_x)[ncol(bound_test_x)] <- paste0(m, "_x")
 
-    # Store results in similar format as original code
-    bound_test_m <- if (exists("bound_test_m")) {
-        cbind(bound_test_m, setNames(data.frame(bounds_F_imp), paste0(i, "_m")))
-    } else {
-        data.frame(countries, setNames(data.frame(bounds_F_imp), paste0(i, "_m")))
-    }
-
-    bound_test_x <- if (exists("bound_test_x")) {
-        cbind(bound_test_x, setNames(data.frame(bounds_F_exp), paste0(i, "_x")))
-    } else {
-        data.frame(countries, setNames(data.frame(bounds_F_exp), paste0(i, "_x")))
-    }
+    # coefficient extraction
     coef_imp[[i]] <- pre_imp[[i]]$coefficients[names(pre_imp[[i]]$coefficients) %like% "income_diff"]
     coef_exp[[i]] <- pre_exp[[i]]$coefficients[names(pre_exp[[i]]$coefficients) %like% "fincome_diff"]
 }
+
+# Tidy bounds table
+bound_test_m <- cbind(countries, bound_test_m)
+bound_test_x <- cbind(countries, bound_test_x)
 
 # Transform coef_imp and coef_exp following the approach used in test_old.R
 coef_exp <- setDT(coef_exp)[, reporter := countries]
