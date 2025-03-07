@@ -62,3 +62,9 @@ for (m in tech) {
 }
 bound_test_m <- cbind(countries, bound_test_m)
 bound_test_x <- cbind(countries, bound_test_x)
+
+bounds_F_exp <- systemfitECM::systemfit_boundsF_test(
+    system_ecm = pre_exp[[i]],
+    units = countries,
+    sel_variables = c(1, 1, 1)
+)

@@ -23,7 +23,7 @@ for (i in tech) {
 
     # Import equations estimation
     sel_variables_imp <- c("tech_imports", "income", "rprices")
-    instruments_imp <- c("income", "consump", "exports")
+    instruments_imp <- c("consump", "exports")
 
     pre_imp[[i]] <- uecm_systemfit(
         dt = eu_data_panel,
@@ -38,7 +38,6 @@ for (i in tech) {
 
     # Export equations estimation
     sel_variables_exp <- c("tech_exports", "fincome", "rprices")
-    instruments_exp <- c("fincome", "investment", "exports")
 
     pre_exp[[i]] <- uecm_systemfit(
         dt = eu_data_panel,
@@ -47,8 +46,6 @@ for (i in tech) {
         grouping = "reporter",
         method = "SUR",
         iterations = 1,
-        method_solv = "EViews",
-        inst_list = instruments_exp
     )
 
     # Perform bounds testing
@@ -76,11 +73,9 @@ for (i in tech) {
     } else {
         data.frame(countries, setNames(data.frame(bounds_F_exp), paste0(i, "_x")))
     }
-    coef_imp[[i]] <- pre_imp[[i]]$coefficients[names(pre_imp[[i]]$coefficients) %like% "dif_income"]
-    coef_exp[[i]] <- pre_exp[[i]]$coefficients[names(pre_exp[[i]]$coefficients) %like% "dif_fincome"]
+    coef_imp[[i]] <- pre_imp[[i]]$coefficients[names(pre_imp[[i]]$coefficients) %like% "income_diff"]
+    coef_exp[[i]] <- pre_exp[[i]]$coefficients[names(pre_exp[[i]]$coefficients) %like% "fincome_diff"]
 }
-
-
 
 # Transform coef_imp and coef_exp following the approach used in test_old.R
 coef_exp <- setDT(coef_exp)[, reporter := countries]
@@ -90,3 +85,5 @@ coef_exp <- melt.data.table(coef_exp, id.vars = "reporter")
 colnames(coef_exp) <- colnames(coef_imp) <- c("reporter", "tech", "coefs")
 coef_exp <- coef_exp[, .(reporter, tech, tech1 = tolower(tech), coefs)][order(reporter, tech1)][, .(reporter, tech = toupper(tech1), coefs)]
 coef_imp <- coef_imp[, .(reporter, tech, tech1 = tolower(tech), coefs)][order(reporter, tech1)][, .(reporter, tech = toupper(tech1), coefs)]
+bound_test_m <- as.data.table(bound_test_m)
+bound_test_x <- as.data.table(bound_test_x)
