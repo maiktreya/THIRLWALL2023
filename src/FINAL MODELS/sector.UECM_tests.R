@@ -63,5 +63,5 @@ elas_result <- as.integer(as.numeric(elas_table$"Pr(>|t|)") > 0.1) %>%
   divide_by(length(countries) * length(tech) * 2)
 paste0("elast not passed at 10%: ", round(elas_result, 3)) %>% print()
 
-source("src/FINAL MODELS/DIAG/sector.F-bound-test-count.R")
-source("src/FINAL MODELS/DIAG/sector.2sls-diag-count.R")
+# source("src/FINAL MODELS/DIAG/sector.F-bound-test-count.R")
+# source("src/FINAL MODELS/DIAG/sector.2sls-diag-count.R")

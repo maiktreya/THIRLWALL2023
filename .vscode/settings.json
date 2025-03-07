@@ -40,7 +40,7 @@
     "terminal.background": "#373434"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "[r]": {
     "editor.defaultFormatter": "REditorSupport.r"
