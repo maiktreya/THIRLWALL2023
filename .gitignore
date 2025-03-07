@@ -1,5 +1,7 @@
-Data
-Output
-Rdata
-.Rproj.user
-.vscode
+Data/
+Output/
+Rdata/
+.Rproj.user/
+.vscode/
+*.code-workspace
+.history/
