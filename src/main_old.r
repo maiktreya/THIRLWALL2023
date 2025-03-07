@@ -65,29 +65,5 @@ bound_test_x <- cbind(countries, bound_test_x)
 
 ## ------------------------------
 
-
-bound_test_m2 <- bound_test_x2 <- data.table()
-bound_interx2 <- bound_interm2 <- c()
-for (i in tech) {
-    ##### BOUND TEST ESTIMATION
-    bound_interm2 <- systemfitECM::systemfit_boundsF_test(
-        system_ecm = pre_imp[[i]],
-        units = countries,
-        sel_variables = c(1, 1, 1)
-    )
-    bound_interx2 <- systemfitECM::systemfit_boundsF_test(
-        system_ecm = pre_exp[[i]],
-        units = countries,
-        sel_variables = c(1, 1, 1)
-    )
-    bound_test_m2 <- cbind(bound_test_m2, bound_interm2)
-    bound_test_x2 <- cbind(bound_test_x2, bound_interx2)
-    colnames(bound_test_m2)[ncol(bound_test_m2)] <- paste0(m, "_m")
-    colnames(bound_test_x2)[ncol(bound_test_x2)] <- paste0(m, "_x")
-}
-
-bound_test_m2 <- cbind(countries, bound_test_m2)
-bound_test_x2 <- cbind(countries, bound_test_x2)
-
-print(bound_test_m)
-print(bound_test_m2)
+bound_test_m %>% print()
+bound_test_x %>% print()

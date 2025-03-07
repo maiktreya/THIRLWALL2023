@@ -27,7 +27,7 @@ for (i in tech) {
 
     # Import equations estimation
     sel_variables_imp <- c("tech_imports", "income", "rprices")
-    instruments_imp <- c("consump", "exports")
+    instruments_imp <- c("income", "consump", "exports")
 
     pre_imp[[i]] <- uecm_systemfit(
         dt = eu_data_panel,
@@ -61,12 +61,12 @@ for (i in tech) {
     bound_interx <- systemfit_boundsF_test(
         system_ecm = pre_exp[[i]],
         units = countries,
-        sel_variables = sel_variables_exp
+        sel_variables = c(1, 1, 1)
     )
     bound_test_m <- cbind(bound_test_m, bound_interm)
     bound_test_x <- cbind(bound_test_x, bound_interx)
-    colnames(bound_test_m)[ncol(bound_test_m)] <- paste0(m, "_m")
-    colnames(bound_test_x)[ncol(bound_test_x)] <- paste0(m, "_x")
+    colnames(bound_test_m)[ncol(bound_test_m)] <- paste0(i, "_m")
+    colnames(bound_test_x)[ncol(bound_test_x)] <- paste0(i, "_x")
 
     # coefficient extraction
     coef_imp[[i]] <- pre_imp[[i]]$coefficients[names(pre_imp[[i]]$coefficients) %like% "income_diff"]
@@ -87,3 +87,6 @@ coef_exp <- coef_exp[, .(reporter, tech, tech1 = tolower(tech), coefs)][order(re
 coef_imp <- coef_imp[, .(reporter, tech, tech1 = tolower(tech), coefs)][order(reporter, tech1)][, .(reporter, tech = toupper(tech1), coefs)]
 bound_test_m <- as.data.table(bound_test_m)
 bound_test_x <- as.data.table(bound_test_x)
+
+bound_test_m %>% print()
+bound_test_x %>% print()
