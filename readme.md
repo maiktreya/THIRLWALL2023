@@ -72,7 +72,7 @@ To install and learn more about `systemfitECM`, visit:
 ---
 
 ### License
-This project is shared under [License Name], allowing for academic and research use with proper attribution.
+This project is shared under The GNU General Public License (GPL-3) allowing for academic and research use with proper attribution.
 
 For questions or contributions, feel free to open an issue or submit a pull request.
 
