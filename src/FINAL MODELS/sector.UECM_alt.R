@@ -18,7 +18,7 @@ tech <- c("PRIM", "RES", "LOW", "MED", "HIGH")
 source("src/FINAL MODELS/EQUATIONS/eqs_UECM.R")
 
 # set empty data containers
-pre_imp <- pre_exp <- coef_imp <- coef_exp <- recm_exp <- recm_imp <- list()
+pre_imp <- pre_exp <- coef_imp <- coef_exp <- list()
 bound_test_m <- bound_test_x <- data.table()
 
 ####################### ESTIMATE MODELS FOR EACH TECHNOLOGY LEVEL ###################################################
@@ -71,31 +71,6 @@ for (i in tech) {
     # coefficient extraction
     coef_imp[[i]] <- pre_imp[[i]]$coefficients[names(pre_imp[[i]]$coefficients) %like% "income_diff"]
     coef_exp[[i]] <- pre_exp[[i]]$coefficients[names(pre_exp[[i]]$coefficients) %like% "fincome_diff"]
-
-    # Only proceed with RECM if we have valid preliminary models
-    if (!is.null(pre_imp[[i]]) && !is.null(pre_exp[[i]])) {
-        recm_imp[[i]] <- recm_systemfit(
-            col_names = sel_variables_imp,
-            dt = eu_data_panel,
-            uecm_model = pre_imp[[i]],
-            nlags = 1,
-            grouping = "reporter",
-            method = "3SLS",
-            iterations = 1,
-            method_solv = "EViews",
-            inst_list = instruments_imp
-        )
-
-        recm_exp[[i]] <- recm_systemfit(
-            col_names = sel_variables_exp,
-            dt = eu_data_panel,
-            uecm_model = pre_exp[[i]],
-            nlags = 1,
-            grouping = "reporter",
-            method = "SUR",
-            iterations = 1,
-        )
-    }
 }
 
 # Tidy bounds table

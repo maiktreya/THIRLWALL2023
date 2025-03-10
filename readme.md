@@ -1,43 +1,84 @@
+# Reproduction of Results: External Imbalances and the Balance of Payments Constraint
 
-# 1.LAST EMPIRICAL TASKS
+## Overview
+This repository provides the necessary scripts and instructions to reproduce the results from the paper:
 
-- Check included prices in formulas from Methodology Cambridge Journal of economics
-<------------------------------------------------------------------------>
+**"External Imbalances and the Balance of Payments Constraint: Evidence on Multi-Sector Thirlwall’s Law for Nine Eurozone Countries (1992-2019)"**
 
-## . USAGE
+## Usage Instructions
+### Manual Computation
 
-### . 1.1.PROJECT STRUCTURE
+To manually compute the results, follow these steps:
 
-### . 1.2. LIMITATIONS ON COMTRADE DATA AND REPLICABILITY
+1. **Check for stationarity of implied variables**
+   Run the following script:
+   ```r
+   source("src/FINAL MODELS/STATIONARITY/panel_stationarity.R", encoding = "UTF-8")
+   ```
 
-### . 1.3. DATA PIPLINES AND SCRIPT SEQUENCES
+2. **Pre-test endogeneity on candidate models**
+   Execute the script below, which internally calls the necessary diagnostic scripts from `src/DIAG`:
+   ```r
+   source("src/FINAL MODELS/sector.UECM_test.R", encoding = "UTF-8")
+   ```
 
-TESTING PROCEDURE
+3. **Estimate elasticities using Feasible Generalized Least Squares (3SLS and SUR)**
 
-1. Check for stationarity of implied variables. Run:
+   - **3.1. Estimate an ARDL in Unrestricted ECM form and perform F Bounds Test (Pesaran, 2001) for X and M:**
+     ```r
+     source("src/FINAL MODELS/sector.UECM.R", encoding = "UTF-8")
+     ```
 
-        source("src/FINAL MODELS/STATIONARITY/panel_stationarity.R", encoding = "UTF-8")
+   - **3.2. Re-estimate the model in RECM (iterate results):**
+     ```r
+     source("src/FINAL MODELS/sector.RECM.R", encoding = "UTF-8")
+     ```
 
-2. Pre-test endogeneity on candidate models
+4. **Use elasticities from Step 3 to estimate MSTL:**
+   ```r
+   source("src/FINAL MODELS/STATIONARITY/panel_stationarity.R", encoding = "UTF-8")
+   ```
 
-        source("src/FINAL MODELS/sector.UECM_test.R", encoding = "UTF-8")
-        # it internally calls the script files contained in src/DIAG
+5. **Test the performance of MSTL by pooling yearly predictions:**
+   ```r
+   source("src/FINAL MODELS/STATIONARITY/panel_stationarity.R", encoding = "UTF-8")
+   ```
 
-3. Estimation of elasticities using Feasible Generalized Least Squares (3SLS and SUR)
+---
 
-◦ 3.1. Estimate an ARDL in Unrestricted ECM form an perform F Bounds Test (Pesaran, 2001) for X and M.
+### Computation via the `systemfitECM` R Library
+To simplify the process, this research includes an R library named **`systemfitECM`**, which automates many aspects of ECM computation in the context of Systems of Simultaneous Equations estimation.
 
-        source("src/FINAL MODELS/sector.UECM.R", encoding = "UTF-8")
+Although still under development, this package allows users to reproduce the results more efficiently. For example, instead of manually running:
+   ```r
+   source("src/FINAL MODELS/sector.UECM.R", encoding = "UTF-8")
+   ```
 
-◦ 3.2. Re-estimate the model in RECM (iterate results)
+You can alternatively use:
+   ```r
+   source("src/FINAL MODELS/sector.UECM.R", encoding = "UTF-8")
+   ```
+Both methods yield identical results.
 
-        source("src/FINAL MODELS/sector.RECM", encoding = "UTF-8")
+To install and learn more about `systemfitECM`, visit:
+➡ **[GitHub Repository: systemfitECM](https://github.com/maiktreya/systemfitECM)**
 
-1. Take elasticities from step 3 to estimate MSTL.
+---
+### Notes
+- Ensure that all dependencies and required R packages are installed before executing the scripts.
+- The scripts should be run in the order specified to ensure correct results.
+- If you encounter any issues, please check the documentation or open an issue in this repository.
 
-        source("src/FINAL MODELS/STATIONARITY/panel_stationarity.R", encoding = "UTF-8")
+---
 
-2. Test performance of MSTL pooling yearly predictions.
+### License
+This project is shared under [License Name], allowing for academic and research use with proper attribution.
 
-        source("src/FINAL MODELS/STATIONARITY/panel_stationarity.R", encoding = "UTF-8")
-<------------------------------------------------------------------------>
+For questions or contributions, feel free to open an issue or submit a pull request.
+
+---
+
+### Contact
+For further inquiries, please contact **Miguel García-Duch** at **miguel.garcia.duch@ucm.es**.
+
+---
