@@ -56,7 +56,7 @@ Although still under development, this package allows users to reproduce the res
 
 You can alternatively use:
    ```r
-   source("src/FINAL MODELS/sector.UECM.R", encoding = "UTF-8")
+   source("src/FINAL MODELS/sector.UECM_alt.R", encoding = "UTF-8")
    ```
 Both methods yield identical results.
 
