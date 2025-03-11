@@ -18,7 +18,7 @@ tech <- c("PRIM", "RES", "LOW", "MED", "HIGH")
 source("src/FINAL MODELS/EQUATIONS/eqs_UECM.R")
 
 # set empty data containers
-pre_imp <- pre_exp <- coef_imp <- coef_exp <- list()
+pre_imp <- pre_exp <- coef_imp <- coef_exp <- recm_exp <- recm_imp <- list()
 bound_test_m <- bound_test_x <- data.table()
 
 ####################### ESTIMATE MODELS FOR EACH TECHNOLOGY LEVEL ###################################################
@@ -71,6 +71,35 @@ for (i in tech) {
     # coefficient extraction
     coef_imp[[i]] <- pre_imp[[i]]$coefficients[names(pre_imp[[i]]$coefficients) %like% "income_diff"]
     coef_exp[[i]] <- pre_exp[[i]]$coefficients[names(pre_exp[[i]]$coefficients) %like% "fincome_diff"]
+
+    # Only proceed with RECM if we have valid preliminary models
+    if (!is.null(pre_imp[[i]]) && !is.null(pre_exp[[i]])) {
+        recm_exp[[i]] <- recm_systemfit(
+            col_names = sel_variables_exp,
+            dt = eu_data_panel,
+            uecm_model = pre_exp[[i]],
+            nlags = 1,
+            grouping = "reporter",
+            method = "SUR",
+            iterations = 1,
+            nunits = 9,
+            nperiods = length(1992:2019),
+        )
+
+        recm_imp[[i]] <- recm_systemfit(
+            col_names = sel_variables_imp,
+            dt = eu_data_panel,
+            uecm_model = pre_imp[[i]],
+            nlags = 1,
+            grouping = "reporter",
+            method = "3SLS",
+            iterations = 1,
+            nunits = 9,
+            nperiods = length(1992:2019),
+            method_solv = "EViews",
+            inst_list = instruments_imp
+        )
+    }
 }
 
 # Tidy bounds table
@@ -88,5 +117,15 @@ coef_imp <- coef_imp[, .(reporter, tech, tech1 = tolower(tech), coefs)][order(re
 bound_test_m <- as.data.table(bound_test_m)
 bound_test_x <- as.data.table(bound_test_x)
 
+
+# Return UECM short run coefficients
+coef_imp %>% print()
+coef_exp %>% print()
+
+# Perform F Bounds Test (Pesaran, 2001)
 bound_test_m %>% print()
 bound_test_x %>% print()
+
+# Return RECMs if needed
+recm_imp %>% first()
+recm_exp %>% first()
