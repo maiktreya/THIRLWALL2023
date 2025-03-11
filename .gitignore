@@ -6,3 +6,5 @@ Rdata/
 *.code-workspace
 .history/
 main_recm.R
+.lintr
+.Rhistory
