@@ -21,7 +21,7 @@ eu_data <- eu_data[reporter %in% countries]
 eu_one <- eu_data[tech == "HIGH"]
 eu_growth <- eu_one[, .(year, growth = c(NA, diff(income)), fgrowth = c(NA, diff(fincome))), by = reporter][year != 1992]
 tl_coef <- total_F[, .(reporter, tlr = exports_c / imports_c)]
-eu_growth <- merge(eu_growth, tl_coef, index = reporter)
+eu_growth <- merge(eu_growth, tl_coef, by = "reporter")
 eu_growth[, forecasts := fgrowth * tlr]
 eu_growth <- eu_growth[, .(reporter, year, growth, forecasts, dif = (growth - forecasts), dif_abs = abs(growth - forecasts))]
 
@@ -47,7 +47,7 @@ plot1 <- ggplot(data_scatter, aes(x = forecasts, y = growth)) +
     stat_poly_line(method = lm, se = FALSE, color = "black") +
     # stat_poly_eq() +
     geom_abline(intercept = 0, slope = 1, color = "black", linetype = 2) +
-    ggtitle("Delta y = -0.002 + 1.093MSTL       R^2: 0.532", subtitle = "Actual growth vs MSTL. Dashed line defines 45% rule.")
+    ggtitle("∆ y = -0.002 + 1.093MSTL       R^2: 0.532", subtitle = "Actual growth vs MSTL. Dashed line defines 45% rule.")
 
 plot2 <-
     ggplot(data_scatter2, aes(x = forecasts, y = growth)) +
@@ -55,7 +55,7 @@ plot2 <-
     stat_poly_line(method = lm, se = FALSE, color = "black") +
     # stat_poly_eq() +
     geom_abline(intercept = 0, slope = 1, color = "black", linetype = 2) +
-    ggtitle("Delta y = -0.001 + 1.051MSTL       R^2: 0.682", subtitle = "Actual growth vs MSTL. Dashed line defines 45% rule. Greece excluded.")
+    ggtitle("∆ y = -0.001 + 1.051MSTL       R^2: 0.682", subtitle = "Actual growth vs MSTL. Dashed line defines 45% rule. Greece excluded.")
 
 grid.arrange(plot1, plot2, ncol = 2, nrow = 1)
 
