@@ -11,11 +11,11 @@ tech <- c("PRIM", "RES", "LOW", "MED", "HIGH")
 ############# GET DATA TO CALCULATE MEAN GROWTH RATES ##############################################
 eu_data <- fread("Data/CSV/COMTRADE/eudata_final_nom.csv")
 eu_data[, tech_imports := log(msum) - mprices / 100 - log(xrate)]
-eu_data[, tech_exports :=exports = mean(share_tech_exports), share_tech_imports = mean(share_tech_impo log(xsum) - xprices / 100 - log(xrate)]
+eu_data[, tech_exports := log(xsum) - xprices / 100 - log(xrate)]
 eu_data <- eu_data[reporter %in% countries]
 
 #################################### GET GROWTH RATES AND PREPARE FOR MERGING ############################################################
-mean_shares <- eu_data[, .(share_tech_rts)), by = c("tech", "reporter")]
+mean_shares <- eu_data[, .(share_tech_exports = mean(share_tech_exports), share_tech_imports = mean(share_tech_imports)), by = c("tech", "reporter")]
 gstart <- eu_data[year %in% c(1992), .(tech_exports, tech_imports, income, fincome, share_tech_exports, share_tech_imports), by = c("tech", "year", "reporter")]
 gend <- eu_data[year %in% c(2019), .(tech_exports, tech_imports, income, fincome, share_tech_exports, share_tech_imports), by = c("tech", "year", "reporter")]
 grate <- gend[, .(year, reporter, tech,

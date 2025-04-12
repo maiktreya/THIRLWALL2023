@@ -47,7 +47,7 @@ plot1 <- ggplot(data_scatter, aes(x = forecasts, y = growth)) +
     stat_poly_line(method = lm, se = FALSE, color = "black") +
     # stat_poly_eq() +
     geom_abline(intercept = 0, slope = 1, color = "black", linetype = 2) +
-    ggtitle("Δy = -0.002 + 1.093MSTL       R^2: 0.532", subtitle = "Actual growth vs MSTL. Dashed line defines 45% rule.")
+    ggtitle("Delta y = -0.002 + 1.093MSTL       R^2: 0.532", subtitle = "Actual growth vs MSTL. Dashed line defines 45% rule.")
 
 plot2 <-
     ggplot(data_scatter2, aes(x = forecasts, y = growth)) +
@@ -55,7 +55,7 @@ plot2 <-
     stat_poly_line(method = lm, se = FALSE, color = "black") +
     # stat_poly_eq() +
     geom_abline(intercept = 0, slope = 1, color = "black", linetype = 2) +
-    ggtitle("Δy = -0.001 + 1.051MSTL       R^2: 0.682", subtitle = "Actual growth vs MSTL. Dashed line defines 45% rule. Greece excluded.")
+    ggtitle("Delta y = -0.001 + 1.051MSTL       R^2: 0.682", subtitle = "Actual growth vs MSTL. Dashed line defines 45% rule. Greece excluded.")
 
 grid.arrange(plot1, plot2, ncol = 2, nrow = 1)
 
